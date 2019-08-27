@@ -9,11 +9,17 @@ Work inside your AWS Cloud9 or local environment.
 
 ## Configure your environment
 
-* In AWS Cloud9 configure the AWS CLI using the local credentials, and set the region name to **`us-east-1`** and the output format to **`json`**. 
+Inside the Cloud9 environment, in the **bash** terminal we are going to configure the AWS CLI as follows:
 
 ``` bash
 aws configure
 ```
+
+- Configuration:
+    - AWS Access Key ID: **(Empty)**
+    - AWS Secret Access Key: **(Empty)**
+    - Default region name [us-east-1]: **us-east-1**
+    - Default output format [json]: **json**
 
 ## Install dependencies and create the React project
 
@@ -160,6 +166,11 @@ amplify add api
 
 ? Do you want to add another path? No
 
+And publish the changes.
+
+``` bash
+amplify publish
+```
 
 ## Configure the React application
 
@@ -277,15 +288,23 @@ In the file **amplify/backend/function/getQuickSightDashboardEmbedURL/getQuickSi
 
 Install the dependencie **amazon-cognito-identity-js** for your backend function **getQuickSightDashboardEmbedURL**.
 
+``` bash
 cd amplify/backend/function/getQuickSightDashboardEmbedURL/src/
 npm install amazon-cognito-identity-js
 cd ../../../../../
-
+```
 
 For the file **amplify/backend/function/getQuickSightDashboardEmbedURL/src/app.js** replace the content with the following lines.
 
-``` javascript
+Inside the code replace the following values with your owns:
 
+* <cognito-authenticated-role>
+* <identity-pool-id>
+* <user-pool-id>
+* <account-id>
+* <dashboard-id>
+
+``` javascript
 var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
@@ -486,14 +505,18 @@ Identify your **AuthRole** assigned to your Identity Pool and assign the followi
 }
 ```
 
-And publish the changes.
+Publish the changes to update the application.
 
 ``` bash
 amplify publish
 ```
 
-If you show the dashboard you will see the message **"Not authorized or not found"**.
+Once you show the dashboard you will see the message following **"Not authorized or not found"**.
+
+![QuickSight Dashboard Not Authorized](images/quicksight-not-authorized.png)
 
 You will find a new user added to Quicksight, just add the user to the Dashboard and show the dashboard again.
 
 Managed dashboard sharing: https://docs.aws.amazon.com/quicksight/latest/user/sharing-a-dashboard.html#share-a-dashboard
+
+![QuickSight Dashboard](images/quicksight-dashboard.png)
