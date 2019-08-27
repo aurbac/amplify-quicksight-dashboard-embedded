@@ -511,7 +511,7 @@ Publish the changes to update the application.
 amplify publish
 ```
 
-Once you show the dashboard you will see the message following **"Not authorized or not found"**.
+Once you show the dashboard you will see the following message **"Not authorized or not found"**.
 
 ![QuickSight Dashboard Not Authorized](images/quicksight-not-authorized.png)
 
