@@ -16,8 +16,8 @@ aws configure
 ```
 
 - Configuration:
-    - AWS Access Key ID: **(Empty)**
-    - AWS Secret Access Key: **(Empty)**
+    - AWS Access Key ID: **(Use default value)**
+    - AWS Secret Access Key: **(Use default value)**
     - Default region name [us-east-1]: **us-east-1**
     - Default output format [json]: **json**
 
