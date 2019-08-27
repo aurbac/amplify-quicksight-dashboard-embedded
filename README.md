@@ -296,7 +296,7 @@ cd ../../../../../
 
 For the file **amplify/backend/function/getQuickSightDashboardEmbedURL/src/app.js** replace the content with the following lines.
 
-Inside the code replace the following values with your owns:
+Inside the code replace the following values with your own values that can be found in your CloudFormation stacks  :
 
 * `<cognito-authenticated-role>`
 * `<identity-pool-id>`
