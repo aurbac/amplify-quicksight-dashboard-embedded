@@ -1,0 +1,19 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplifyquicksightdas-dev-20190826212914-authRole",
+            "UnauthRoleArn": "arn:aws:iam::716736363845:role/amplifyquicksightdas-dev-20190826212914-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::716736363845:role/amplifyquicksightdas-dev-20190826212914-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "amplifyquicksightdas-dev-20190826212914-deployment",
+            "UnauthRoleName": "amplifyquicksightdas-dev-20190826212914-unauthRole",
+            "StackName": "amplifyquicksightdas-dev-20190826212914",
+            "StackId": "arn:aws:cloudformation:us-east-1:716736363845:stack/amplifyquicksightdas-dev-20190826212914/8d116a00-c848-11e9-b608-0aaa9d7b8aca"
+        },
+        "categories": {
+            "auth": {
+                "amplifyquicksightdasb192237f": {}
+            }
+        }
+    }
+}
