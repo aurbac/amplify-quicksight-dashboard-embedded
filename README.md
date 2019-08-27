@@ -276,14 +276,14 @@ In the file **amplify/backend/function/getQuickSightDashboardEmbedURL/getQuickSi
 							],
 							"Resource": "*"
 						},
-                        {
-                            "Effect": "Allow",
-                            "Action": [
-                                "cognito-identity:GetId",
-                                "cognito-identity:GetOpenIdToken"
-                            ],
-                            "Resource": "*"
-                        }
+						{
+							"Effect": "Allow",
+							"Action": [
+							    "cognito-identity:GetId",
+							    "cognito-identity:GetOpenIdToken"
+							],
+							"Resource": "*"
+						}
 ```
 
 Install the dependencie **amazon-cognito-identity-js** for your backend function **getQuickSightDashboardEmbedURL**.
