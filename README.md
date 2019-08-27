@@ -298,11 +298,11 @@ For the file **amplify/backend/function/getQuickSightDashboardEmbedURL/src/app.j
 
 Inside the code replace the following values with your owns:
 
-* <cognito-authenticated-role>
-* <identity-pool-id>
-* <user-pool-id>
-* <account-id>
-* <dashboard-id>
+* `<cognito-authenticated-role>`
+* `<identity-pool-id>`
+* `<user-pool-id>`
+* `<account-id>`
+* `<dashboard-id>`
 
 ``` javascript
 var express = require('express')
