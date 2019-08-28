@@ -526,6 +526,8 @@ Copy the URL provided by Cloud9 and add as a domain for embedded dashboards, Clo
 
 https://docs.aws.amazon.com/quicksight/latest/user/approve-domain-for-dashboard-embedding.html
 
+Create a new new account follwoing the proccess and login.
+
 ![Cloud9 HTTPS](images/cloud9-https.png)
 
 Now you can test your application, show the dashboard and you will see the following message **"Not authorized or not found"**.
