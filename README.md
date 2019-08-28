@@ -9,17 +9,16 @@ Work inside your AWS Cloud9 or local environment.
 
 ## Configure your environment
 
-Inside the Cloud9 environment, in the **bash** terminal we are going to configure the AWS CLI as follows:
-
 ``` bash
 aws configure
 ```
 
-- Configuration:
-    - AWS Access Key ID: **(Use default value)**
-    - AWS Secret Access Key: **(Use default value)**
+- In AWS Cloud9 configure the AWS CLI as follows. 
+    - AWS Access Key ID: **(Use default)**
+    - AWS Secret Access Key: **(Use default)**
     - Default region name [us-east-1]: **us-east-1**
     - Default output format [json]: **json**
+- In your local environment [configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration) with your own IAM credentials.
 
 ## Install dependencies and create the React project
 
@@ -511,11 +510,29 @@ Publish the changes to update the application.
 amplify publish
 ```
 
-Once you show the dashboard you will see the following message **"Not authorized or not found"**.
+## Testing your Application inside Cloud9
+
+Inside your amplify project start the React application.
+
+``` bash
+npm start
+```
+
+Use the **Preview Running Application** option inside the Cloud9 environment.
+
+![React Start](images/react-start.png)
+
+Copy the URL provided by Cloud9 and add as a domain for embedded dashboards, Cloud9 expose an HTTPS url required.
+
+https://docs.aws.amazon.com/quicksight/latest/user/approve-domain-for-dashboard-embedding.html
+
+![Cloud9 HTTPS](images/cloud9-https.png)
+
+Now you can test your application, show the dashboard and you will see the following message **"Not authorized or not found"**.
 
 ![QuickSight Dashboard Not Authorized](images/quicksight-not-authorized.png)
 
-You will find a new user added to Quicksight, just add the user to the Dashboard and show the dashboard again.
+You will find a new user added to Quicksight related to Cognito, just add the user to the Dashboard and show the dashboard again.
 
 Managed dashboard sharing: https://docs.aws.amazon.com/quicksight/latest/user/sharing-a-dashboard.html#share-a-dashboard
 
