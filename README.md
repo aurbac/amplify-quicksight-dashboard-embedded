@@ -1,11 +1,12 @@
-# Create a React project from scratch and deploy with Amplify
+# Embedding Amazon QuickSight Dashboards in a React Application using Amplify
 
-Work inside your AWS Cloud9 or local environment.
+![Diagram](images/diagram.png)
 
 ## Requirements
 
-* AWS Account with Quicksight Enterprise Edition
-* QuickSight Dashboard created
+* Work inside your AWS Cloud9 or local environment with AWS CLI configured.
+* AWS Account with Quicksight Enterprise Edition.
+* [QuickSight Dashboard created](https://docs.aws.amazon.com/quicksight/latest/user/example-analysis.html).
 
 ## Configure your environment
 
