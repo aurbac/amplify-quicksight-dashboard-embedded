@@ -4,8 +4,8 @@
 
 ## Requirements
 
-* Work inside your AWS Cloud9 or local environment with AWS CLI configured.
-* AWS Account with Quicksight Enterprise Edition.
+* Work inside your [AWS Cloud9](https://aws.amazon.com/cloud9/) or local environment with AWS CLI configured.
+* [AWS Account with Quicksight Enterprise Edition](https://aws.amazon.com/premiumsupport/knowledge-center/quicksight-enterprise-account/).
 * [QuickSight Dashboard created](https://docs.aws.amazon.com/quicksight/latest/user/example-analysis.html).
 
 ## Configure your environment
