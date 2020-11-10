@@ -23,12 +23,6 @@ aws configure
 
 ## Install dependencies and create the React project
 
-Update Node.js to the minimal version of 10.
-
-``` bash
-nvm i v10
-```
-
 Install Amplify CLI tool https://github.com/aws-amplify/amplify-cli
 
 ``` bash
@@ -45,6 +39,7 @@ npm install --save aws-amplify
 npm install --save aws-amplify-react
 npm install react-router-dom
 npm install amazon-quicksight-embedding-sdk
+npm install aws-amplify @aws-amplify/ui-react
 ```
 
 ## Initialize your project with Amplify
@@ -104,9 +99,11 @@ amplify auth add
 amplify add hosting
 ```
 
+? Select the plugin module to execute **Amazon CloudFront and S3**
+
 ? Select the environment setup: **DEV (S3 only with HTTP)**
 
-? hosting bucket name **myapp-20190710043203-hostingbucket** (Use default name)
+? hosting bucket name **amplifyquicksightdas-20201103191128-hostingbucket**
 
 ? index doc for the website **index.html**
 
@@ -130,15 +127,25 @@ Use the **Hosting endpoint** to browse inside your React application.
 amplify add function
 ```
 
-? Provide a friendly name for your resource to be used as a label for this category in the project: getQuickSightDashboardEmbedURL
 
-? Provide the AWS Lambda function name: getQuickSightDashboardEmbedURL
+? Select which capability you want to add: **Lambda function (serverless function)**
 
-? Choose the function template that you want to use: Serverless express function (Integration with Amazon API Gateway)
+? Provide a friendly name for your resource to be used as a label for this category in the project: **getQuickSightDashboardEmbedURL**
 
-? Do you want to access other resources created in this project from your Lambda function? No
+? Provide the AWS Lambda function name: **getQuickSightDashboardEmbedURL**
 
-? Do you want to edit the local lambda function now? No
+? Choose the runtime that you want to use: **NodeJS**
+
+? Choose the function template that you want to use: **Serverless ExpressJS function (Integration with API Gateway)**
+
+? Do you want to access other resources in this project from your Lambda function? **No**
+
+? Do you want to invoke this function on a recurring schedule? **No**
+
+? Do you want to configure Lambda layers for this function? **No**
+
+? Do you want to edit the local lambda function now? **No**
+
 
 ``` bash
 amplify publish
@@ -146,30 +153,33 @@ amplify publish
 
 ## Add API  REST
 
+``` bash
 amplify add api
+```
 
-? Please select from one of the below mentioned services REST
+? Please select from one of the below mentioned services: **REST**
 
-? Provide a friendly name for your resource to be used as a label for this category in the project: quicksight
+? Provide a friendly name for your resource to be used as a label for this category in the project: **quicksight**
 
-? Provide a path (e.g., /items) /getQuickSightDashboardEmbedURL
+? Provide a path (e.g., /book/{isbn}): **/getQuickSightDashboardEmbedURL**
 
-? Choose a Lambda source Use a Lambda function already added in the current Amplify project
+? Choose a Lambda source **Use a Lambda function already added in the current Amplify project**
 
-? Choose the Lambda function to invoke by this path quicksight
+? Choose the Lambda function to invoke by this path **getQuickSightDashboardEmbedURL**
 
-? Restrict API access Yes
+? Restrict API access **Yes**
 
-? Who should have access? Authenticated users only
+? Who should have access? **Authenticated users only**
 
-? What kind of access do you want for Authenticated users? read
+? What kind of access do you want for Authenticated users? **read**
 
-? Do you want to add another path? No
+? Do you want to add another path? **No**
+
 
 And publish the changes.
 
 ``` bash
-amplify publish
+amplify push
 ```
 
 ## Configure the React application
@@ -177,93 +187,123 @@ amplify publish
 For the file **src/App.js**, replace the content with the following lines.
 
 ``` javascript
-import React from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-
-import Embed from './Embed';
-import './App.css';
-
-import Amplify from 'aws-amplify';
-import Auth from '@aws-amplify/auth';
-
-import { withAuthenticator } from 'aws-amplify-react';
-
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+import Amplify, { Auth } from 'aws-amplify';
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import awsconfig from './aws-exports';
+import Embed from './Embed';
+import { makeStyles } from '@material-ui/core/styles';
 
-Auth.configure(awsconfig);
-Amplify.configure(awsconfig)
+Amplify.configure(awsconfig);
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    paddingTop: theme.spacing(2)
+  },
+}));
 
 function App() {
+  
+  const classes = useStyles();
+  
   return (
-    <Router>
-      <div className="App">
-        <Route path="/" component={Embed} exact />
-      </div>
-    </Router>
+    <div>
+      <AmplifySignOut />
+      <Container maxWidth="md">
+        <Typography variant="h4" component="h1" align="center" color="textPrimary" className={classes.title} gutterBottom>
+          Amazon QuickSight Embed
+        </Typography>
+        <Embed />
+      </Container>
+    </div>
   );
 }
 
 export default withAuthenticator(App);
+
 ```
 
 Create the file **src/Embed.js** and add the following lines.
 
 ``` javascript
 import React from 'react';
-import { API } from 'aws-amplify';
-import { Auth } from 'aws-amplify';
+import { API, Auth } from 'aws-amplify';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { withStyles } from '@material-ui/core/styles';
 
 var QuickSightEmbedding = require("amazon-quicksight-embedding-sdk");
 
-const Embed = ({}) => {
+const useStyles = theme => ({
+  loading: {
+    alignContent: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+    marginTop: theme.spacing(4),
+  },
+});
+
+class Embed extends React.Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            loader: true
+        };
+    }
     
-    var jwtToken;
-    var payloadSub;
-    var email;
+    componentDidMount() {
+        this.getQuickSightDashboardEmbedURL();
+    }
     
-    Auth.currentSession()
-    .then(data => { console.log(data); jwtToken = data.idToken.jwtToken; payloadSub = data.idToken.payload.sub; email = data.idToken.payload.email; console.log(jwtToken + " - " + payloadSub + " - " + email); } )
-    .catch(err => console.log(err));
-    
-    async function handleClick(e) {
-        e.preventDefault();
-        let myInit = { // OPTIONAL
-            headers: {}, // OPTIONAL
-            response: true, // OPTIONAL (return the entire Axios response object instead of only response.data)
-            queryStringParameters: {  // OPTIONAL
+    getQuickSightDashboardEmbedURL = async () => {
+        const data = await Auth.currentSession();
+        const jwtToken = data.idToken.jwtToken;
+        const payloadSub = data.idToken.payload.sub;
+        const email = data.idToken.payload.email;
+        
+        const params = { 
+            headers: {},
+            response: true,
+            queryStringParameters: {
                 jwtToken: jwtToken,
                 payloadSub: payloadSub,
                 email: email
             }
         }
-        const data = await API.get('quicksight', '/getQuickSightDashboardEmbedURL', myInit);
-        console.log(data);
-        var containerDiv = document.getElementById("dashboardContainer");
-        var dashboard;
-        var options = {
-            url: data.data.data.EmbedUrl,
+        const quicksight = await API.get('quicksight', '/getQuickSightDashboardEmbedURL', params);
+        console.log(quicksight);
+        const containerDiv = document.getElementById("dashboardContainer");
+        
+        const options = {
+            url: quicksight.data.data.EmbedUrl,
             container: containerDiv,
             parameters: {
                 country: "United States"
             },
             scrolling: "no",
-            height: "700px",
-            width: "1000px"
+            height: "800px",
+            width: "912px",
+            footerPaddingEnabled: true,
         };
-        dashboard = QuickSightEmbedding.embedDashboard(options);
+        const dashboard = QuickSightEmbedding.embedDashboard(options);
+        this.setState({ loader: false });
+    };
+    
+    render() {
+        const { classes } = this.props;
+        return (
+            <div>
+                { this.state.loader && (
+                    <div className={classes.loading}> <CircularProgress /> </div>
+                )}
+                <div id="dashboardContainer"></div>
+            </div>
+        );
     }
-    return (
-        <>
-        <h1>Quicksight Embed </h1>
-        <div id="dashboardContainer"></div>
-        <a href="#" onClick={handleClick}>
-          Show me the Dashboard!!!!!
-        </a>
-        </>
-    );
 }
 
-export default Embed;
+export default withStyles(useStyles)(Embed);
 ```
 
 In the file **amplify/backend/function/getQuickSightDashboardEmbedURL/getQuickSightDashboardEmbedURL-cloudformation-template.json** add the following lines to the **lambdaexecutionpolicy** resource in the **PolicyDocument** property.
@@ -485,7 +525,7 @@ app.listen(3000, function() {
 module.exports = app
 ```
 
-Identify your **AuthRole** assigned to your Identity Pool and assign the following inline policy.
+Identify your **AuthRole** assigned to your Cognito Identity Pool and add the following inline policy.
 
 ``` json
 {

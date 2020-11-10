@@ -138,6 +138,9 @@
           },
         
         
+        
+        
+        
       "quicksight": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
@@ -499,6 +502,10 @@
         "ApiName": {
           "Description": "API Friendly name",
           "Value": "quicksight"
+        },
+        "ApiId": {
+          "Description": "API ID (prefix of API URL)",
+          "Value": {"Ref": "quicksight"}
         }
     }
   }

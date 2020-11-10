@@ -8,7 +8,8 @@
                 "auth": [
                     "/GET"
                 ]
-            }
+            },
+            "policyResourceName": "/getQuickSightDashboardEmbedURL"
         }
     ],
     "resourceName": "quicksight",
@@ -21,8 +22,8 @@
     "privacy": {
         "auth": 1,
         "unauth": 0,
-        "authRoleName": "amplifyquicksightdas-dev-20190826212914-authRole",
-        "unAuthRoleName": "amplifyquicksightdas-dev-20190826212914-unauthRole"
+        "authRoleName": "amplify-amplifyquicksightdas-dev-190818-authRole",
+        "unAuthRoleName": "amplify-amplifyquicksightdas-dev-190818-unauthRole"
     },
     "dependsOn": [
         {

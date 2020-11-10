@@ -1,4 +1,3 @@
-
 var express = require('express')
 var bodyParser = require('body-parser')
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
@@ -25,7 +24,7 @@ app.use(function(req, res, next) {
 
 app.get('/getQuickSightDashboardEmbedURL', function(req, res) {
 
-    var roleArn = '<cognito-authenticated-role>'; // your cognito authenticated role arn here
+    var roleArn = 'arn:aws:iam::943952228413:role/amplify-amplifyquicksightdas-dev-190818-authRole'; // your cognito authenticated role arn here
   
     AWS.config.region = 'us-east-1';
   
@@ -33,19 +32,19 @@ app.get('/getQuickSightDashboardEmbedURL', function(req, res) {
     var cognitoIdentity = new AWS.CognitoIdentity();
     var stsClient = new AWS.STS();
     var params = {
-        IdentityPoolId: '<identity-pool-id>', // your identity pool id here
+        IdentityPoolId: 'us-east-1:3f53a915-880f-416d-a255-54cc46a1853a', // your identity pool id here
         Logins: {
             // your logins here
-            'cognito-idp.us-east-1.amazonaws.com/<user-pool-id>': req.query.jwtToken
+            'cognito-idp.us-east-1.amazonaws.com/us-east-1_e6Kktai2W': req.query.jwtToken
         }
     };
-
+    
     cognitoIdentity.getId(params, function(err, data) {
         if (err) console.log(err, err.stack);
         else {
             data.Logins = {
                 // your logins here
-                'cognito-idp.us-east-1.amazonaws.com/<user-pool-id>': req.query.jwtToken
+                'cognito-idp.us-east-1.amazonaws.com/us-east-1_e6Kktai2W': req.query.jwtToken
             };
 
             cognitoIdentity.getOpenIdToken(data, function(err, openIdToken) {
@@ -80,7 +79,7 @@ app.get('/getQuickSightDashboardEmbedURL', function(req, res) {
                             });
                             var registerUserParams = {
                                 // required
-                                AwsAccountId: "<account-id>",
+                                AwsAccountId: "943952228413",
                                 // can be passed in from api-gateway call
                                 Email: req.query.email,
                                 // can be passed in from api-gateway call
@@ -100,9 +99,9 @@ app.get('/getQuickSightDashboardEmbedURL', function(req, res) {
                                     if (err.code && err.code === 'ResourceExistsException') {
                                       var getDashboardParams = {
                                             // required
-                                            AwsAccountId: "<account-id>",
+                                            AwsAccountId: "943952228413",
                                             // required
-                                            DashboardId: "<dashboard-id>",
+                                            DashboardId: "456a6499-cf49-43fd-8f39-497776ceee36",
                                             // required
                                             IdentityType: 'IAM',
                                             ResetDisabled: false, // can be passed in from api-gateway call
@@ -133,9 +132,9 @@ app.get('/getQuickSightDashboardEmbedURL', function(req, res) {
                                     setTimeout(function() {
                                     var getDashboardParams = {
                                           // required
-                                          AwsAccountId: "<account-id>",
+                                          AwsAccountId: "943952228413",
                                           // required
-                                          DashboardId: "<dashboard-id>",
+                                          DashboardId: "456a6499-cf49-43fd-8f39-497776ceee36",
                                           // required
                                           IdentityType: 'IAM',
                                           ResetDisabled: false, // can be passed in from api-gateway call
