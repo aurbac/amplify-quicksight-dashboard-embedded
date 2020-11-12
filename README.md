@@ -547,17 +547,17 @@ Create a new new account following the proccess and login.
 
 ![Cloud9 HTTPS](images/cloud9-https.png)
 
-Cloud9 expose an HTTPS url required, copy the URL provided and add as a domain in QuickSight configurations for **Domains and Embedding**.
+Cloud9 expose a **HTTPS URL**, copy the URL provided and in **Manage QuickSight** add the domain in **Domains and Embedding** section.
 
 https://docs.aws.amazon.com/quicksight/latest/user/approve-domain-for-dashboard-embedding.html
 
-Now you can test your application, show the dashboard and you will see the following message **"Not authorized or not found"**.
+Now you can test your application and see the dashboard with the following message **"Not authorized or not found"**.
 
 ![QuickSight Dashboard Not Authorized](images/quicksight-not-authorized.png)
 
-You will find a new user added to Quicksight related to Cognito, just add the user to the Dashboard and show the dashboard again.
+Update the dashboard permissions, you will find a new user added to Quicksight related to Cognito, just add the user to the Dashboard and show the dashboard again.
 
-Managed dashboard sharing: https://docs.aws.amazon.com/quicksight/latest/user/sharing-a-dashboard.html#share-a-dashboard
+Managed dashboard permissions for sharing: https://docs.aws.amazon.com/quicksight/latest/user/sharing-a-dashboard.html#share-a-dashboard
 
 ![QuickSight Dashboard](images/quicksight-dashboard.png)
 
