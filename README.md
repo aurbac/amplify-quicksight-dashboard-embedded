@@ -2,24 +2,34 @@
 
 ![Diagram](images/diagram.png)
 
+
 ## Requirements
 
 * Work inside your [AWS Cloud9](https://aws.amazon.com/cloud9/) or local environment with AWS CLI configured.
 * [AWS Account with Quicksight Enterprise Edition](https://aws.amazon.com/premiumsupport/knowledge-center/quicksight-enterprise-account/).
 * [QuickSight Dashboard created](https://docs.aws.amazon.com/quicksight/latest/user/example-analysis.html).
 
-## Configure your environment
+
+## Configure your Cloud9 environment
+
+Inside the Cloud9 environment, in the bash terminal we are going to configure the AWS CLI with your IAM credentials as follows.
 
 ``` bash
 aws configure
 ```
 
 - In AWS Cloud9 configure the AWS CLI as follows. 
-    - AWS Access Key ID: **(Use default)**
-    - AWS Secret Access Key: **(Use default)**
+    - AWS Access Key ID: ** (Type your Access key ID)**
+    - AWS Secret Access Key: **(Type your Secret access key)**
     - Default region name [us-east-1]: **us-east-1**
     - Default output format [json]: **json**
-- In your local environment [configure the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html#cli-quick-configuration) with your own IAM credentials.
+
+Remove aws_session_token variable from aws credentials.
+
+``` bash
+sed -i 's/aws_session_token =//g' ~/.aws/credentials
+```
+
 
 ## Install dependencies and create the React project
 
@@ -34,13 +44,10 @@ Create the React project.
 ``` bash
 npx create-react-app amplify-quicksight-dashboard-embedded
 cd amplify-quicksight-dashboard-embedded
-npm install @material-ui/core
-npm install --save aws-amplify
-npm install --save aws-amplify-react
-npm install react-router-dom
 npm install amazon-quicksight-embedding-sdk
-npm install aws-amplify @aws-amplify/ui-react
+npm install aws-amplify aws-amplify-react @aws-amplify/ui-react @material-ui/core
 ```
+
 
 ## Initialize your project with Amplify
 
@@ -78,9 +85,10 @@ https://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html
 
 ? Please choose the profile you want to use **default**
 
+
 ## Authentication with Amazon Cognito
 
-By adding Analytics, the authentication module was added. Update with the following command using the default values.
+Add authentication with the following command using the default values.
 
 ``` bash
 amplify auth add
@@ -93,40 +101,12 @@ amplify auth add
 
 ? Do you want to configure advanced settings? **No, I am done.**
 
-## Hosting with Amazon S3
-
-``` bash
-amplify add hosting
-```
-
-? Select the plugin module to execute **Amazon CloudFront and S3**
-
-? Select the environment setup: **DEV (S3 only with HTTP)**
-
-? hosting bucket name **amplifyquicksightdas-20201103191128-hostingbucket**
-
-? index doc for the website **index.html**
-
-? error doc for the website **index.html**
-
-``` bash
-amplify push
-```
-
-? Are you sure you want to continue? **Yes**
-
-``` bash
-amplify publish
-```
-
-Use the **Hosting endpoint** to browse inside your React application.
 
 ## Add Lambda Function
 
 ``` bash
 amplify add function
 ```
-
 
 ? Select which capability you want to add: **Lambda function (serverless function)**
 
@@ -146,10 +126,6 @@ amplify add function
 
 ? Do you want to edit the local lambda function now? **No**
 
-
-``` bash
-amplify publish
-```
 
 ## Add API  REST
 
@@ -176,11 +152,12 @@ amplify add api
 ? Do you want to add another path? **No**
 
 
-And publish the changes.
+Build all your local backend resources and provision it in the cloud with the following command.
 
 ``` bash
 amplify push
 ```
+
 
 ## Configure the React application
 
@@ -306,7 +283,9 @@ class Embed extends React.Component {
 export default withStyles(useStyles)(Embed);
 ```
 
-In the file **amplify/backend/function/getQuickSightDashboardEmbedURL/getQuickSightDashboardEmbedURL-cloudformation-template.json** add the following lines to the **lambdaexecutionpolicy** resource in the **PolicyDocument** property.
+## Update your Lambda function and permissions required
+
+In the file [**amplify/backend/function/getQuickSightDashboardEmbedURL/getQuickSightDashboardEmbedURL-cloudformation-template.json**](amplify/backend/function/getQuickSightDashboardEmbedURL/getQuickSightDashboardEmbedURL-cloudformation-template.json) add the following lines to the **lambdaexecutionpolicy** resource in the **PolicyDocument** property (line 130).
 
 ``` json
 						{
@@ -323,7 +302,7 @@ In the file **amplify/backend/function/getQuickSightDashboardEmbedURL/getQuickSi
 							    "cognito-identity:GetOpenIdToken"
 							],
 							"Resource": "*"
-						}
+						},
 ```
 
 Install the dependencie **amazon-cognito-identity-js** for your backend function **getQuickSightDashboardEmbedURL**.
@@ -338,7 +317,7 @@ For the file **amplify/backend/function/getQuickSightDashboardEmbedURL/src/app.j
 
 Inside the code replace the following values with your own values that can be found in your CloudFormation stack outputs:
 
-* `<cognito-authenticated-role>`
+* `<cognito-authenticated-role-arn>`
 * `<identity-pool-id>`
 * `<user-pool-id>`
 * `<account-id>`
@@ -371,7 +350,7 @@ app.use(function(req, res, next) {
 
 app.get('/getQuickSightDashboardEmbedURL', function(req, res) {
 
-    var roleArn = '<cognito-authenticated-role>'; // your cognito authenticated role arn here
+    var roleArn = '<cognito-authenticated-role-arn>'; // your cognito authenticated role arn here
   
     AWS.config.region = 'us-east-1';
   
@@ -545,11 +524,12 @@ Identify your **AuthRole** assigned to your Cognito Identity Pool and add the fo
 }
 ```
 
-Publish the changes to update the application.
+Update your lambda function and permissions in the cloud with the following command.
 
 ``` bash
-amplify publish
+amplify push
 ```
+
 
 ## Testing your Application inside Cloud9
 
@@ -563,13 +543,13 @@ Use the **Preview Running Application** option inside the Cloud9 environment.
 
 ![React Start](images/react-start.png)
 
-Copy the URL provided by Cloud9 and add as a domain for embedded dashboards, Cloud9 expose an HTTPS url required.
-
-https://docs.aws.amazon.com/quicksight/latest/user/approve-domain-for-dashboard-embedding.html
+Create a new new account following the proccess and login.
 
 ![Cloud9 HTTPS](images/cloud9-https.png)
 
-Create a new new account following the proccess and login.
+Cloud9 expose an HTTPS url required, copy the URL provided and add as a domain in QuickSight configurations for **Domains and Embedding**.
+
+https://docs.aws.amazon.com/quicksight/latest/user/approve-domain-for-dashboard-embedding.html
 
 Now you can test your application, show the dashboard and you will see the following message **"Not authorized or not found"**.
 
@@ -580,3 +560,27 @@ You will find a new user added to Quicksight related to Cognito, just add the us
 Managed dashboard sharing: https://docs.aws.amazon.com/quicksight/latest/user/sharing-a-dashboard.html#share-a-dashboard
 
 ![QuickSight Dashboard](images/quicksight-dashboard.png)
+
+
+## Hosting with Amazon S3 and Amazon CloudFront (Optional)
+
+``` bash
+amplify add hosting
+```
+
+? Select the plugin module to execute **Amazon CloudFront and S3**
+
+? Select the environment setup: **PROD (S3 with CloudFront using HTTPS)**
+
+? hosting bucket name **(use default name or personalized)**
+
+
+``` bash
+amplify publish
+```
+
+Add the **Hosting endpoint** to your [domains in QuickSight](https://docs.aws.amazon.com/quicksight/latest/user/approve-domain-for-dashboard-embedding.html).
+
+Use the **Hosting endpoint** to browse inside your React application to visualize your dashboard.
+
+![QuickSight Dashboard](images/cloudfront.png)
